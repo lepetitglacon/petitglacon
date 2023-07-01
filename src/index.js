@@ -5,7 +5,7 @@ import './assets/gltf/logo.glb'
 import './assets/img/earth.png'
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xcccccc)
+scene.background = new THREE.Color(0xffffff)
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.z = 3.5;
 camera.position.y = .5;
@@ -21,10 +21,11 @@ window.addEventListener( 'resize', () => {
     renderer.setSize( window.innerWidth, window.innerHeight );
 });
 
-const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+const light = new THREE.AmbientLight( 0xffffff ); // soft white light
 scene.add( light );
 
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+directionalLight.castShadow = true
 scene.add( directionalLight );
 
 let logo = undefined
@@ -35,12 +36,13 @@ loader.load(
     function ( gltf ) {
 
         const texture = new THREE.TextureLoader().load('src/assets/img/earth.png' );
-        const material = new THREE.MeshBasicMaterial( { map: texture } );
+        const material = new THREE.MeshMatcapMaterial(  );
+        material.map = texture
+        material.roughness = .5
 
         logo = gltf.scene.children[0]
-        // logo.material = new THREE.MeshPhongMaterial()
+        logo.castShadow = true
         logo.material = material
-        // logo.material.color = new THREE.Color(0x333333)
         logo.rotation.x = 1.5
         scene.add( logo );
     },
